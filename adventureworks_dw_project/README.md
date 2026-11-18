@@ -14,7 +14,7 @@ Projeto individual: SQL Server AdventureWorks2016 → Apache Airflow → Postgre
 - Porta: `5432`
 - Banco: `adventureworks_dw`
 
-O SQL Server de origem não foi detectado nesta máquina (porta 1433 indisponível). Cadastre `adventureworks_mssql` no painel do Airflow com o host real acessível pelo contêiner.
+Cadastre `adventureworks_mssql` no painel do Airflow com o host real acessível pelo contêiner.
 Use `host.docker.internal` para um SQL Server instalado no Windows quando houver conectividade.
 
 ## Pré-requisitos
@@ -37,13 +37,13 @@ Se o tipo Microsoft SQL Server não aparecer, instale o provider e reinicie o Ai
 
 ## Instalação
 
-1. Execute `sql/01_schema.sql` **uma única vez no PostgreSQL de destino** (psql, DBeaver ou pgAdmin).
-2. Copie `dags/adventureworks_dw.py` para a pasta `dags/` reconhecida pelo Airflow.
+1. Execute `sql/criar_data_warehouse.sql` **uma única vez no PostgreSQL de destino** (psql, DBeaver ou pgAdmin).
+2. Copie a pasta `dags/dag_adventureworks.py` e a pasta `dags/etl/` para o diretório de DAGs do Airflow.
 3. Instale os providers no **mesmo ambiente Python** do scheduler e workers, e reinicie serviços.
 4. Crie as duas Connections pelo painel **Admin → Connections**.
 5. No painel DAGs, ative `adventureworks_star_incremental` e execute **Trigger DAG**.
 6. Verifique `load_dim_*` → `load_fact_sales` → `quality_checks` e os logs.
-7. Execute `sql/02_kpis.sql` no PostgreSQL para obter os dez resultados.
+7. Execute `sql/indicadores.sql` no PostgreSQL para obter os dez resultados.
 8. Faça uma segunda execução sem alterações e confira o número de linhas processadas nos logs (janela de reprocessamento de dois dias).
 
 **Importante:** o primeiro processamento histórico pode levar tempo e requer acesso ao SQL Server. O projeto não contém o backup AdventureWorks, nem credenciais, nem prints fabricados.
@@ -70,7 +70,3 @@ Cada dimensão e a fato têm watermark próprio em `ctl.watermark`. A consulta f
 - `article/`: artigo editável (modelo, completar evidências e resultados).
 - `tests/`: testes estáticos de estrutura.
 - `docs/`: dicionário e roteiro de validação.
-
-## Segurança
-
-Não comite `.env`, senhas, backups nem exports de Connections. Configure permissões mínimas: origem somente leitura, destino com permissões sobre `dw` e `ctl`. O Airflow armazena credenciais no metastore/secret backend; para produção habilite Fernet key e secret backend apropriado.

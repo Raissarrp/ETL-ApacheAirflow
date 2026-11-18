@@ -5,3 +5,4 @@ __pycache__/
 *.bak
 *.log
 secrets/
+GUIA_DO_ESTUDANTE.md
