@@ -1,0 +1,36 @@
+@startuml
+hide circle
+skinparam linetype ortho
+entity "dim_date" as date { *date_key : int <<PK>>
+ full_date : date
+ year : int
+ month : int }
+entity "dim_product" as product { *product_key : int <<PK>>
+ product_id : int <<UK>>
+ product_name : text
+ category : text }
+entity "dim_customer" as customer { *customer_key : int <<PK>>
+ customer_id : int <<UK>>
+ customer_name : text }
+entity "dim_territory" as territory { *territory_key : int <<PK>>
+ territory_id : int <<UK>>
+ territory_name : text }
+entity "dim_salesperson" as seller { *salesperson_key : int <<PK>>
+ salesperson_id : int <<UK>>
+ salesperson_name : text }
+entity "fact_sales" as fact { *sales_order_id : int <<PK>>
+ *sales_order_detail_id : int <<PK>>
+ order_date_key : int <<FK>>
+ product_key : int <<FK>>
+ customer_key : int <<FK>>
+ territory_key : int <<FK>>
+ salesperson_key : int <<FK>>
+ order_qty : int
+ net_amount : numeric
+ estimated_cost : numeric }
+date ||--o{ fact
+product ||--o{ fact
+customer ||--o{ fact
+territory ||--o{ fact
+seller ||--o{ fact
+@enduml
